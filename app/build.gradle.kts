@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -56,4 +60,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Material Design Icons
+    implementation("androidx.compose.material:material-icons-extended:<version>")
+
+
+    // Firebase - Use platform() for BOM
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    //  Firebase Authentication (Email/Password)
+    implementation(libs.firebase.auth)
+
+    //Firebase Authentication (Google Sign In)
+    implementation(libs.play.services.auth)
 }

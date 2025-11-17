@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.practice.edubond.feature.auth.login.LoginScreen
+
 import com.practice.edubond.ui.theme.EduBondTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +22,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             EduBondTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen()
+                    //LoginScreen()
+                 //   SignupScreen()
+
+
                 }
             }
         }
