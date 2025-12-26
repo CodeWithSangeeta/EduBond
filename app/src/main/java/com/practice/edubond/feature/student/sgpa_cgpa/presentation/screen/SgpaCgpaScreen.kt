@@ -52,8 +52,9 @@ fun SgpaCgpaScreen() {
                         viewModel.updateSubject(semester.id, index, updated)
                     }
                 )
+            }
 
-
+            item {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Box(

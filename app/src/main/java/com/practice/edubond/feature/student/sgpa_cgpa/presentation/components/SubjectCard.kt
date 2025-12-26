@@ -3,13 +3,16 @@ package com.practice.edubond.feature.student.sgpa_cgpa.presentation.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,7 +32,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +43,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubjectCard(
@@ -50,112 +58,99 @@ fun SubjectCard(
     onChange: (Subject) -> Unit,
     onDelete: () -> Unit
 ) {
-    var subjectName by remember { mutableStateOf(subject.name) }
-    var credits by remember { mutableStateOf(subject.credits.toString()) }
-    var selectedGrade by remember { mutableStateOf(subject.grade) }
     var isGradeExpanded by remember { mutableStateOf(false) }
     val grades = listOf("O", "A+", "A", "B+", "B", "C", "P", "F")
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+            .padding(vertical = 10.dp),
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF7FAFC) // light card background
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
-            // Subject Row
+            /* ---------- SUBJECT NAME + DELETE ---------- */
+
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
-                    value = subjectName,
+                    value = subject.name,
                     onValueChange = {
-                        subjectName = it
-                        onChange(Subject(name = subjectName,
-                            credits=credits.toIntOrNull() ?: 0,
-                            grade = selectedGrade))
-                                    },
-                    placeholder = { Text("Subject Name / Subject Code") },
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true
+                        onChange(subject.copy(name = it))
+                    },
+                    placeholder = {
+                        Text(
+                            "Subject Name",
+                            color = Color(0xFF9CA3AF)
+                        )
+                    },
+                    singleLine = true,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFE5E7EB),
+                        unfocusedBorderColor = Color(0xFFE5E7EB),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        cursorColor = Color.Black
+                    )
                 )
 
-                IconButton(onClick = {onDelete()}) {
+                Spacer(modifier = Modifier.width(10.dp))
+
+                IconButton(
+                    onClick = onDelete,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xFFFFE4E4))
+                ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = Color(0xFFEF4444)
                     )
                 }
             }
 
-            // Credits + Grade Row
+            /* ---------- CREDITS + GRADE ---------- */
+
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
 
-                // Credits TextField with Stepper
+                // Credits
                 OutlinedTextField(
-                    value = credits,
+                    value = subject.credits.toString(),
                     onValueChange = {
-                        if (it.all { char -> char.isDigit() }) {
-                            credits = it
-                            onChange(Subject(subjectName, credits.toIntOrNull() ?: 0, selectedGrade))
+                        if (it.all { c -> c.isDigit() }) {
+                            onChange(subject.copy(credits = it.toIntOrNull() ?: 0))
                         }
                     },
-                    modifier = Modifier.weight(1f),
+                    placeholder = {
+                        Text(
+                            "Credits",
+                            color = Color(0xFF9CA3AF)
+                        )
+                    },
                     singleLine = true,
-                    placeholder = { Text("Credits") },
-                    shape = RoundedCornerShape(16.dp),
-                    trailingIcon = {
-                        Column(
-                            verticalArrangement = Arrangement.Center
-                        ) {
-
-                            // Increase Arrow
-                            IconButton(
-                                onClick = {
-                                    val num = credits.toIntOrNull() ?: 0
-                                    credits = (num + 1).toString()
-                                },
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(18.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowUp,
-                                    contentDescription = "Increase"
-                                )
-                            }
-
-                            // Decrease Arrow
-                            IconButton(
-                                onClick = {
-                                    val num = credits.toIntOrNull() ?: 0
-                                    if (num > 0) {
-                                        credits = (num - 1).toString()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(18.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "Decrease"
-                                )
-                            }
-                        }
-                    }
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFE5E7EB),
+                        unfocusedBorderColor = Color(0xFFE5E7EB),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    )
                 )
-
-
 
                 // Grade Dropdown
                 ExposedDropdownMenuBox(
@@ -165,24 +160,33 @@ fun SubjectCard(
                 ) {
 
                     OutlinedTextField(
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth(),
-                        value = selectedGrade,
-                        onValueChange = {
-                            selectedGrade = it
-                            onChange(Subject(subjectName, credits.toIntOrNull() ?: 0, selectedGrade))
-                        },
+                        value = subject.grade,
+                        onValueChange = {},
                         readOnly = true,
-                        singleLine = true,
-                        placeholder = { Text("Grade") },
+                        placeholder = {
+                            Text(
+                                "Grade",
+                                color = Color(0xFF111827),
+                                fontWeight = FontWeight.Medium
+                            )
+                        },
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
                                 contentDescription = null
                             )
                         },
-                        shape = RoundedCornerShape(16.dp)
+                        singleLine = true,
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE5E7EB),
+                            unfocusedBorderColor = Color(0xFFE5E7EB),
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        )
                     )
 
                     ExposedDropdownMenu(
@@ -193,7 +197,7 @@ fun SubjectCard(
                             DropdownMenuItem(
                                 text = { Text(grade) },
                                 onClick = {
-                                    selectedGrade = grade
+                                    onChange(subject.copy(grade = grade))
                                     isGradeExpanded = false
                                 }
                             )
@@ -204,6 +208,3 @@ fun SubjectCard(
         }
     }
 }
-
-
-

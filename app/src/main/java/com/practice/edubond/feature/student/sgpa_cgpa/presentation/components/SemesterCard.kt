@@ -46,7 +46,8 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
 fun SemesterCard(
     semester: Semester,
     onAddSubject: () -> Unit ,
-    onUpdateSubject:(Int,Subject) -> Unit) {
+    onUpdateSubject:(Int,Subject) -> Unit)
+{
 
     var expanded by remember { mutableStateOf(true) }
 
@@ -109,6 +110,7 @@ fun SemesterCard(
                       //onDeleteSubject(index)
                     }
                   )
+                 Spacer(modifier = Modifier.height(16.dp))
                }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -117,7 +119,7 @@ fun SemesterCard(
                             onAddSubject()
                         },
                         text = "+ Add New Subject",
-                        backgroundColor = ColorGradient.lightGradient
+                        backgroundColor = ColorGradient.buttonGradient
                     )
 
 
@@ -128,9 +130,12 @@ fun SemesterCard(
                         backgroundColor = ColorGradient.semesterCardGradient
                     )
                 }
-            }
-        }
+
+
+           }
+
     }
+}
 
 
 

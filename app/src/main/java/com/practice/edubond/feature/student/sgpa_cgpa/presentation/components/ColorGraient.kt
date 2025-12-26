@@ -19,10 +19,18 @@ object ColorGradient{
             Color(0xFF690EC6)
         )
     )
-    val lightGradient = Brush.horizontalGradient(
+    val subjectCardGradient = Brush.linearGradient(
         listOf(
-            Color(0xFF99CECD),
-            Color(0xFFA09ABA)
+            Color(0xFFB3E5FC).copy(alpha = 0.45f), // light blue
+            Color(0xFFD1C4E9).copy(alpha = 0.45f)
+        )
+    )
+
+
+    val buttonGradient = Brush.linearGradient(
+        listOf(
+            Color(0xFFAAC5C9),
+            Color(0xFFB79CC7)
         )
     )
 

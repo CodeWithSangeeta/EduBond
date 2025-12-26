@@ -18,7 +18,10 @@ class SgpaCgpaViewModel : ViewModel() {
         val newSemester = Semester(
             id = semesters.size + 1
         )
+        newSemester.subjects.add(Subject())
         semesters.add(newSemester)
+
+
     }
 
     fun addSubject(semesterId: Int) {
