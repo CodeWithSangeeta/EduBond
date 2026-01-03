@@ -1,6 +1,7 @@
 package com.practice.edubond.feature.student.sgpa_cgpa.presentation.data
 
 
+import com.practice.edubond.data.local.EduBondDatabase
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.dao.SemesterDao
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.dao.SubjectDao
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SemesterEntity
@@ -8,10 +9,10 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.en
 import kotlinx.coroutines.flow.Flow
 
 class SgpaCgpaRepository(
-    private val semesterDao: SemesterDao,
-    private val subjectDao: SubjectDao
+  database : EduBondDatabase
 ) {
-
+    private val semesterDao = database.semesterDao()
+    private val subjectDao = database.subjectDao()
     /* ---------- SEMESTER ---------- */
 
     fun getAllSemesters(): Flow<List<SemesterEntity>> {

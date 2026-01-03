@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 
-    //ksp plugin
+    // declares ksp plugins globally
     alias(libs.plugins.ksp) apply false
 
     // Add the dependency for the Google services Gradle plugin
