@@ -14,10 +14,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,30 +29,42 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.Co
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.HeaderSection
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.SemesterCard
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModelFactory
 
 @Composable
 fun SgpaCgpaScreen() {
 
+    val context = LocalContext.current
+
+    val viewModel: SgpaCgpaViewModel = viewModel(
+        factory = SgpaCgpaViewModelFactory(context)
+    )
+
+    // ✅ Correctly collected
+    val semesters by viewModel.semesters.collectAsState()
+
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
     ) {
 
-        val viewModel: SgpaCgpaViewModel = viewModel()
-        val semesters = viewModel.semesters
         HeaderSection()
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+
             items(semesters) { semester ->
+
                 SemesterCard(
-                    semester = semester,
+                    semesterId = semester.semesterId,
+                    semesterNumber = semester.semesterNumber,
+                    viewModel = viewModel,
                     onAddSubject = {
-                        viewModel.addSubject(semester.id)
+                        viewModel.addSubject(semester.semesterId)
                     },
-                    onUpdateSubject = { index, updated ->
-                        viewModel.updateSubject(semester.id, index, updated)
+                    onDeleteSubject = {
+                        viewModel.deleteSubject(semester.semesterId)
                     }
                 )
             }
@@ -76,7 +91,5 @@ fun SgpaCgpaScreen() {
                 }
             }
         }
-
     }
 }
-

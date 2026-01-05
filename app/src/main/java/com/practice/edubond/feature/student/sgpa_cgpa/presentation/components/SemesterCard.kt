@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -37,22 +38,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.common.collect.Multimaps.index
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Semester
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
 
 
 @Composable
 fun SemesterCard(
-    semester: Semester,
-    onAddSubject: () -> Unit ,
-    onUpdateSubject:(Int,Subject) -> Unit)
+    semesterId: Int,
+    semesterNumber: Int,
+    viewModel: SgpaCgpaViewModel,
+    onAddSubject: () -> Unit,
+    onDeleteSubject: () -> Unit
+)
 {
 
     var expanded by remember { mutableStateOf(true) }
 
 
-    Card(
+
+        Card(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
@@ -81,7 +88,7 @@ fun SemesterCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Semester ${semester.id}",
+                            text = "Semester ${semesterNumber}",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.weight(1f)
@@ -98,25 +105,21 @@ fun SemesterCard(
                 }
             }
 
-                if (expanded) {
-                 Column(modifier = Modifier.padding(16.dp)) {
-                   semester.subjects.forEachIndexed { index, subject ->
-                    SubjectCard(
-                    subject = subject,
-                    onChange = {updated ->
-                       onUpdateSubject(index,updated)
-                    },
-                    onDelete = {
-                      //onDeleteSubject(index)
-                    }
-                  )
-                 Spacer(modifier = Modifier.height(16.dp))
-               }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+
+        if (expanded) {
+                 Column(modifier = Modifier.padding(16.dp)) {
+
+                     SubjectCard(
+                         subject = Subject(),
+                         onChange = {},
+                         onDelete = {viewModel.deleteSubject(semesterId)}
+                     )
+
+                     Spacer(modifier = Modifier.height(12.dp))
                     Buttons(
                         onClick = {
-                            onAddSubject()
+                            viewModel.addSubject(semesterId)
                         },
                         text = "+ Add New Subject",
                         backgroundColor = ColorGradient.buttonGradient
