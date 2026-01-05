@@ -4,8 +4,8 @@ package com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.practice.edubond.data.local.EduBondDatabase
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.SgpaCgpaRepository
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.SgpaCgpaDatabase
 
 class SgpaCgpaViewModelFactory(
     private val context: Context
@@ -14,11 +14,8 @@ class SgpaCgpaViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SgpaCgpaViewModel::class.java)) {
 
-            val database = SgpaCgpaDatabase.getDatabase(context)
-            val repository = SgpaCgpaRepository(
-                database.semesterDao(),
-                database.subjectDao()
-            )
+            val database = EduBondDatabase.getDatabase(context)
+            val repository = SgpaCgpaRepository(database)
 
             @Suppress("UNCHECKED_CAST")
             return SgpaCgpaViewModel(repository) as T
