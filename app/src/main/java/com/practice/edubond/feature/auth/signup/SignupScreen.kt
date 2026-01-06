@@ -70,7 +70,7 @@ import com.practice.edubond.feature.auth.components.SocialDivider
 @Preview(showBackground = true,showSystemUi = true)
 @Composable
 fun SignupScreen(modifier: Modifier = Modifier) {
-    var selectedRole by remember { mutableStateOf<String?>("Student") }
+    var selectedRole by remember { mutableStateOf<String?>(null) }
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phoneNo by remember { mutableStateOf("") }
