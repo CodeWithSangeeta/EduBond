@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,6 +29,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.ColorGradient
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.HeaderSection
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.SemesterCard
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Semester
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SemesterEntity
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModelFactory
 
@@ -43,6 +47,12 @@ fun SgpaCgpaScreen() {
     // ✅ Correctly collected
     val semesters by viewModel.semesters.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.ensureAtLeastOneSemester()
+    }
+
+
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -54,17 +64,30 @@ fun SgpaCgpaScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            items(semesters) { semester ->
+            items(items = semesters,
+                key = {it.semesterId}
+                ) { semester : SemesterEntity->
+
+                LaunchedEffect(Unit) {
+                    viewModel.ensureAtLeastOneSubject(semester.semesterId)
+                }
+
+                    val subjects by viewModel
+                    .getSubjectsForSemester(semester.semesterId)
+                    .collectAsState(initial = emptyList())
 
                 SemesterCard(
                     semesterId = semester.semesterId,
                     semesterNumber = semester.semesterNumber,
-                    viewModel = viewModel,
+                    subjects = subjects,
                     onAddSubject = {
                         viewModel.addSubject(semester.semesterId)
                     },
-                    onDeleteSubject = {
-                        viewModel.deleteSubject(semester.semesterId)
+                    onUpdateSubject = { subject : SubjectEntity->
+                        viewModel.updateSubject(subject)
+                    },
+                    onDeleteSubject = { subjectId ->
+                        viewModel.deleteSubject(subjectId)
                     }
                 )
             }
@@ -89,7 +112,10 @@ fun SgpaCgpaScreen() {
                         fontWeight = FontWeight.Bold
                     )
                 }
+                Spacer(modifier = Modifier.height(42.dp))
+
             }
         }
     }
 }
+

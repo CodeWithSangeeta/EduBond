@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,27 +32,29 @@ fun HeaderSection() {
             .background(ColorGradient.topAppGradient),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row() {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            Image(
-                painter = painterResource(id = R.drawable.cgpa_sgpa_logo),
-                contentDescription = null,
-                modifier = Modifier.size(100.dp),
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.cgpa_sgpa_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp),
+                )
 
-            Text(
-                text = "SGPA & CGPA Calculator",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+                Text(
+                    text = "SGPA & CGPA Calculator",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
 
-            Text(
-                text = "Track your semester and cumulative grades",
-                color = Color.White.copy(alpha = 0.8f),
-                fontSize = 16.sp
-            )
+                Text(
+                    text = "Track your semester and cumulative grades",
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontSize = 16.sp
+                )
+            }
         }
     }
     }

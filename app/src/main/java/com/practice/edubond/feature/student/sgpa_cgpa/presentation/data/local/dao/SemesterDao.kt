@@ -12,8 +12,16 @@ import kotlinx.coroutines.flow.Flow
 interface SemesterDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSemester(semester: SemesterEntity)
+    suspend fun insertSemester(semester: SemesterEntity): Long
+
 
     @Query("SELECT * FROM semesters ORDER BY semesterNumber ASC")
     fun getAllSemesters(): Flow<List<SemesterEntity>>
+
+    @Query("SELECT MAX(semesterNumber) FROM semesters")
+    suspend fun getMaxSemesterNumber(): Int?
+
+    @Query("DELETE FROM semesters WHERE semesterId = :semesterId")
+    suspend fun deleteSemester(semesterId: Int)
+
 }

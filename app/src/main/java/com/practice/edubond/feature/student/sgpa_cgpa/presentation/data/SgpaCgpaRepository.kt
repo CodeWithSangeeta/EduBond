@@ -18,9 +18,19 @@ class SgpaCgpaRepository(
         return semesterDao.getAllSemesters()
     }
 
-    suspend fun insertSemester(semester: SemesterEntity) {
-        semesterDao.insertSemester(semester)
+    suspend fun insertSemester(semester: SemesterEntity): Long {
+        return semesterDao.insertSemester(semester)
     }
+
+    suspend fun getMaxSemesterNumber(): Int? {
+        return semesterDao.getMaxSemesterNumber()
+    }
+
+    suspend fun deleteSemester(semesterId: Int) {
+        semesterDao.deleteSemester(semesterId)
+    }
+
+
 
     /* ---------- SUBJECT ---------- */
 
@@ -29,6 +39,9 @@ class SgpaCgpaRepository(
     }
 
     suspend fun insertSubject(subject: SubjectEntity) {
+        subjectDao.insertSubject(subject)
+    }
+    suspend fun updateSubject(subject: SubjectEntity) {
         subjectDao.insertSubject(subject)
     }
 

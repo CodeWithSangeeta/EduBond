@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.common.collect.Multimaps.index
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Semester
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
 
 
@@ -49,78 +50,81 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.Sgp
 fun SemesterCard(
     semesterId: Int,
     semesterNumber: Int,
-    viewModel: SgpaCgpaViewModel,
+    subjects: List<SubjectEntity>,
     onAddSubject: () -> Unit,
-    onDeleteSubject: () -> Unit
-)
-{
+    onUpdateSubject: (SubjectEntity) -> Unit,
+    onDeleteSubject: (Int) -> Unit
+) {
 
     var expanded by remember { mutableStateOf(true) }
 
 
 
-        Card(
+    Card(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(30.dp),
-        border = BorderStroke(1.dp,Color(0x33FFFFFF)),
-       elevation = CardDefaults.cardElevation(12.dp),
+        border = BorderStroke(1.dp, Color(0x33FFFFFF)),
+        elevation = CardDefaults.cardElevation(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFF2F2F2)
         ),
     ) {
-            Box(
+        Box(
+            modifier = Modifier
+                .background(
+                    ColorGradient.semesterCardGradient,
+                    shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                )
+                .padding(16.dp),
+        ) {
+            Column(
                 modifier = Modifier
-                    .background(
-                        ColorGradient.semesterCardGradient,
-                        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                    )
-                    .padding(16.dp),
+                    .fillMaxWidth()
+                    .animateContentSize()
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize()
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Semester ${semesterNumber}",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.weight(1f)
-                        )
+                    Text(
+                        text = "Semester ${semesterNumber}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
 
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(
-                                imageVector = if (expanded) Icons.Default.KeyboardArrowUp
-                                else Icons.Default.KeyboardArrowDown,
-                                contentDescription = null
-                            )
-                        }
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(
+                            imageVector = if (expanded) Icons.Default.KeyboardArrowUp
+                            else Icons.Default.KeyboardArrowDown,
+                            contentDescription = null
+                        )
                     }
                 }
             }
+        }
 
 
 
         if (expanded) {
-                 Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp)) {
 
-                     SubjectCard(
-                         subject = Subject(),
-                         onChange = {},
-                         onDelete = {viewModel.deleteSubject(semesterId)}
-                     )
-
-                     Spacer(modifier = Modifier.height(12.dp))
-                    Buttons(
-                        onClick = {
-                            viewModel.addSubject(semesterId)
+                subjects.forEach { subject ->
+                    SubjectCard(
+                        subject = subject,
+                        onChange = { updated ->
+                            onUpdateSubject(updated)
                         },
+                        onDelete = { onDeleteSubject(subject.subjectId) }
+                    )
+                }
+
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Buttons(
+                        onClick = onAddSubject,
                         text = "+ Add New Subject",
                         backgroundColor = ColorGradient.buttonGradient
                     )
@@ -135,10 +139,11 @@ fun SemesterCard(
                 }
 
 
-           }
+            }
 
+        }
     }
-}
+
 
 
 

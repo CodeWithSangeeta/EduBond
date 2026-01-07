@@ -3,10 +3,13 @@ package com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.SgpaCgpaRepository
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SemesterEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -25,9 +28,38 @@ class SgpaCgpaViewModel(
             )
 
 
-    init {
+
+
+    /* ---------- ACTIONS ---------- */
+
+    fun addSemester() {
         viewModelScope.launch {
-            if (semesters.value.isEmpty()) {
+            val max = repository.getMaxSemesterNumber() ?: 0
+            val semesterId = repository.insertSemester(
+                SemesterEntity(semesterNumber = max + 1)
+            )
+            repository.insertSubject(
+                SubjectEntity(
+                    semesterOwnerId = semesterId.toInt(),
+                    name = "",
+                    credits = 0,
+                    grade = ""
+                )
+            )
+        }
+    }
+
+    fun deleteSemester(semesterId : Int) {
+        viewModelScope.launch {
+           repository.deleteSemester(semesterId)
+        }
+    }
+
+
+    fun ensureAtLeastOneSemester() {
+        viewModelScope.launch {
+            val maxSemester = repository.getMaxSemesterNumber()
+            if (maxSemester == null) {
                 repository.insertSemester(
                     SemesterEntity(semesterNumber = 1)
                 )
@@ -35,25 +67,30 @@ class SgpaCgpaViewModel(
         }
     }
 
-    /* ---------- ACTIONS ---------- */
 
-    fun addSemester() {
+    fun ensureAtLeastOneSubject(semesterId: Int) {
         viewModelScope.launch {
-            val semesterNumber = semesters.value.size + 1
-            repository.insertSemester(
-                SemesterEntity(semesterNumber = semesterNumber)
-            )
+            repository.getSubjectsForSemester(semesterId)
+                .first()
+                .let { subjects ->
+                    if (subjects.isEmpty()) {
+                        repository.insertSubject(
+                            SubjectEntity(
+                                semesterOwnerId = semesterId,
+                                name = "",
+                                credits = 0,
+                                grade = ""
+                            )
+                        )
+                    }
+                }
         }
     }
 
-//    fun deleteSemester() {
-//        viewModelScope.launch {
-//           repository.deleteSemester(semesterId)
-//        }
-//    }
 
-
-
+    fun getSubjectsForSemester(semesterId: Int): Flow<List<SubjectEntity>> {
+        return repository.getSubjectsForSemester(semesterId)
+    }
 
     fun addSubject(
         semesterId: Int,
@@ -73,9 +110,10 @@ class SgpaCgpaViewModel(
         }
     }
 
-    fun updateSubject(subject: SubjectEntity) {
+
+    fun updateSubject(subject:  SubjectEntity){
         viewModelScope.launch {
-            repository.insertSubject(subject)
+            repository.updateSubject(subject)
         }
     }
 
