@@ -14,3 +14,12 @@ data class Subject(
     var credits : Int = 0,
     var grade : String = ""
 )
+
+
+data class UiSubject(
+    val id: Int? = null,
+    val name: String = "",
+    val credits: Int = 0,
+    val grade: String = ""
+)
+

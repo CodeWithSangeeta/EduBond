@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.common.collect.Multimaps.index
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Semester
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.UiSubject
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
 
@@ -50,9 +51,9 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.Sgp
 fun SemesterCard(
     semesterId: Int,
     semesterNumber: Int,
-    subjects: List<SubjectEntity>,
+    subjects: List<UiSubject>,
     onAddSubject: () -> Unit,
-    onUpdateSubject: (SubjectEntity) -> Unit,
+    onUpdateSubject: (UiSubject,Int) -> Unit,
     onDeleteSubject: (Int) -> Unit
 ) {
 
@@ -111,13 +112,13 @@ fun SemesterCard(
         if (expanded) {
             Column(modifier = Modifier.padding(16.dp)) {
 
-                subjects.forEach { subject ->
+                subjects.forEachIndexed {index, subject ->
                     SubjectCard(
                         subject = subject,
                         onChange = { updated ->
-                            onUpdateSubject(updated)
+                            onUpdateSubject(updated,index)
                         },
-                        onDelete = { onDeleteSubject(subject.subjectId) }
+                        onDelete = { onDeleteSubject(index) }
                     )
                 }
 

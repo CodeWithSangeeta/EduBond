@@ -30,6 +30,7 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.Co
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.HeaderSection
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.SemesterCard
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Semester
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.UiSubject
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SemesterEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
@@ -47,9 +48,6 @@ fun SgpaCgpaScreen() {
     // ✅ Correctly collected
     val semesters by viewModel.semesters.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.ensureAtLeastOneSemester()
-    }
 
 
 
@@ -68,28 +66,55 @@ fun SgpaCgpaScreen() {
                 key = {it.semesterId}
                 ) { semester : SemesterEntity->
 
-                LaunchedEffect(Unit) {
-                    viewModel.ensureAtLeastOneSubject(semester.semesterId)
+                LaunchedEffect(semester.semesterId) {
+                    viewModel.ensureUiSubjectForSemester(semester.semesterId)
                 }
 
-                    val subjects by viewModel
+                val dbSubjects by viewModel
                     .getSubjectsForSemester(semester.semesterId)
                     .collectAsState(initial = emptyList())
+
+
+                val uiSubjectsForSemester =
+                    viewModel.uiSubjects.collectAsState().value[semester.semesterId]
+                        ?: emptyList()
+
+                val subjectsToShow =
+                    if (dbSubjects.isEmpty()) uiSubjectsForSemester
+                    else dbSubjects.map {
+                        UiSubject(
+                            id = it.subjectId,
+                            name = it.name,
+                            credits = it.credits,
+                            grade = it.grade
+                        )
+                    }
+
+
 
                 SemesterCard(
                     semesterId = semester.semesterId,
                     semesterNumber = semester.semesterNumber,
-                    subjects = subjects,
+                    subjects = subjectsToShow,
                     onAddSubject = {
-                        viewModel.addSubject(semester.semesterId)
+                        viewModel.addUiSubject(semester.semesterId)
                     },
-                    onUpdateSubject = { subject : SubjectEntity->
-                        viewModel.updateSubject(subject)
+                    onUpdateSubject = { subject, index ->
+                        viewModel.updateUiSubject(
+                            semester.semesterId,
+                            index,
+                            subject
+                        )
                     },
-                    onDeleteSubject = { subjectId ->
-                        viewModel.deleteSubject(subjectId)
+                    onDeleteSubject = { index ->
+                        viewModel.deleteUiSubject(
+                            semester.semesterId,
+                            index
+                        )
                     }
                 )
+
+
             }
 
             item {

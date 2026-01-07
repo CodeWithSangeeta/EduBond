@@ -51,24 +51,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
+import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.UiSubject
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubjectCard(
-    subject: SubjectEntity,
-    onChange: (SubjectEntity) -> Unit,
+    subject: UiSubject,
+    onChange: (UiSubject) -> Unit,
     onDelete: () -> Unit
 ) {
-    var name by remember(subject.subjectId) {
+    var name by remember(subject.id) {
         mutableStateOf(subject.name)
     }
 
-    var credits by remember(subject.subjectId) {
+    var credits by remember(subject.id) {
         mutableStateOf(subject.credits.toString())
     }
 
-    var grade by remember(subject.subjectId) {
+    var grade by remember(subject.id) {
         mutableStateOf(subject.grade)
     }
     var isGradeExpanded by remember { mutableStateOf(false) }
