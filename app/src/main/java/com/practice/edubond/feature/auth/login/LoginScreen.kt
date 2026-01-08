@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -72,52 +74,47 @@ import com.practice.edubond.feature.auth.navigation.AuthRoutes
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
-
-    val viewModel : LoginViewModel = viewModel()
-    val loginState by viewModel.loginState.observeAsState()
-
+fun LoginScreen(
+    navController : NavController,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
     var selectedRole by remember { mutableStateOf<String?>(null) }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
 
 
     Column(
-//        modifier = modifier.fillMaxSize()
-//         .background(AuthGradient.background)
-//        .padding(top=36.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+         .background(AuthGradient.background)
+        .padding(top=36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        // 🎯 React to LoginState
-        // ---------------------------
-        when (loginState) {
 
-            is LoginState.Loading -> {
-                CircularProgressIndicator()
-            }
-
-            is LoginState.Error -> {
-                Text(
-                    text = (loginState as LoginState.Error).message,
-                    color = Color.Red,
-                    modifier = Modifier.padding(12.dp)
-                )
-            }
-
-            is LoginState.Authenticated -> {
-                LaunchedEffect(Unit) {
-                    navController.navigate(MainRoutes.STUDENT_HOME) {
-                        popUpTo(MainRoutes.AUTH) { inclusive = true }
-                    }
+        // Navigate when authenticated
+        LaunchedEffect(state.isAuthenticated) {
+            if (state.isAuthenticated) {
+                navController.navigate(MainRoutes.STUDENT_HOME) {
+                    popUpTo(MainRoutes.AUTH) { inclusive = true }
                 }
             }
+        }
 
-            else -> {}
+// Show loading
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        }
+
+// Show error
+        state.error?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                modifier = Modifier.padding(12.dp)
+            )
         }
 
 
-       LogoHeader(title = "Welcome Back", subtitle = "Choose your role to continue")
+        LogoHeader(title = "Welcome Back", subtitle = "Choose your role to continue")
 
         AuthCard {
                     AuthFormWrapper(
@@ -126,16 +123,16 @@ fun LoginScreen(navController: NavController) {
                     ) {
                                 AuthText("Email")
                                 AuthTextField(
-                                    value= email,
-                                    onChange = {email = it},
+                                    value= state.email,
+                                    onChange = {viewModel.onEvent(LoginEvent.EmailChanged(it))},
                                     label = "Enter your email",
                                     leadingIcon = Icons.Default.Email
                                 )
 
                                AuthText("Password")
                                 PasswordTextField(
-                                    text= password,
-                                    onChange = {password = it},
+                                    text= state.password,
+                                    onChange = {viewModel.onEvent(LoginEvent.PasswordChanged(it))},
                                     label = "Enter your password",
                                 )
 
@@ -159,12 +156,11 @@ fun LoginScreen(navController: NavController) {
                                 GradientButton(
                                     text = "Login",
                                     selectedRole = selectedRole,
-                                    onClick = {viewModel.login(email,password)}
+                                    onClick = { viewModel.onEvent(LoginEvent.LoginClicked)}
                                 )
                                 SocialDivider("Or Continue with")
                                 GoogleButton{}
-                                AuthSwitchText("Don't have an account?","Sign Up", onClick = {navController.navigate(
-                                    AuthRoutes.SIGNUP)})
+                                AuthSwitchText("Don't have an account?","Sign Up", onClick = {})
 
                                 }
                             }

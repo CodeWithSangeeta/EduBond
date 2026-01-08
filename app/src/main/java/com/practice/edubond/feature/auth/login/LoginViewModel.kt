@@ -1,48 +1,80 @@
 package com.practice.edubond.feature.auth.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
+import com.practice.edubond.feature.auth.domain.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
-    //email-password-auth
-    private val _loginState = MutableLiveData<LoginState>()
-    val loginState: LiveData<LoginState> = _loginState
+    private val _state = MutableStateFlow(LoginState())
+    val state: StateFlow<LoginState> = _state.asStateFlow()
 
     init {
-        checkAuthStatus()
-    }
-
-    fun checkAuthStatus(){
-        if(auth.currentUser != null){
-            _loginState.value =LoginState.Authenticated
-        }else{
-            _loginState.value = LoginState.Unauthenticated
+        if (authRepository.isUserLoggedIn()) {
+            _state.update { it.copy(isAuthenticated = true) }
         }
     }
 
-    //Email-password
-    fun login(email : String, password : String){
-        if(email.isEmpty() || password.isEmpty()){
-            _loginState.value = LoginState.Error("Email and password can't be empty")
-            return
-        }
-        _loginState.value =LoginState.Loading
+    fun onEvent(event: LoginEvent) {
+        when (event) {
 
-        viewModelScope.launch {
-            try {
-                auth.signInWithEmailAndPassword(email, password).await()
-                _loginState.value = LoginState.Authenticated
-            } catch(e: Exception) {
-                _loginState.value = LoginState.Error(e.message ?: "Something went wrong")
+            is LoginEvent.EmailChanged -> {
+                _state.update { it.copy(email = event.email) }
+            }
+
+            is LoginEvent.PasswordChanged -> {
+                _state.update { it.copy(password = event.password) }
+            }
+
+            LoginEvent.LoginClicked -> {
+                login()
+            }
+
+            LoginEvent.GoogleLoginClicked -> {
+                // will add later
             }
         }
     }
 
+    private fun login() {
+        val email = state.value.email
+        val password = state.value.password
+
+        if (email.isBlank() || password.isBlank()) {
+            _state.update { it.copy(error = "Email or password cannot be empty") }
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, error = null) }
+
+            try {
+                authRepository.login(email, password)
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isAuthenticated = true
+                    )
+                }
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Login failed"
+                    )
+                }
+            }
+        }
+    }
 }

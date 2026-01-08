@@ -1,9 +1,12 @@
 package com.practice.edubond.feature.auth.login
 
-sealed class LoginState {
-    object Authenticated : LoginState()
-    object Unauthenticated : LoginState()
-    object Loading : LoginState()
-    data class Error(val message : String) : LoginState()
-    }
+
+data class LoginState(
+    val email: String = "",
+    val password: String = "",
+    val isLoading: Boolean = false,
+    val isAuthenticated: Boolean = false,
+    val error: String? = null
+)
+
 

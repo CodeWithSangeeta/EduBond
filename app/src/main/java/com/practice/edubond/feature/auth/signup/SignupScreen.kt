@@ -39,6 +39,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.practice.edubond.R
 import com.practice.edubond.feature.auth.components.AuthCard
 import com.practice.edubond.feature.auth.components.AuthFormWrapper
@@ -66,21 +69,20 @@ import com.practice.edubond.feature.auth.components.RoleSwitch
 import com.practice.edubond.feature.auth.components.AuthGradient
 import com.practice.edubond.feature.auth.components.AuthSwitchText
 import com.practice.edubond.feature.auth.components.SocialDivider
+import com.practice.edubond.feature.auth.login.LoginViewModel
 
-@Preview(showBackground = true,showSystemUi = true)
+
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
+fun SignupScreen(navController: NavController,
+                 viewModel: SignupViewModel = hiltViewModel()) {
     var selectedRole by remember { mutableStateOf<String?>(null) }
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phoneNo by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirm_password by remember { mutableStateOf("") }
     var checked by remember {mutableStateOf(false)}
+
+    val state by viewModel.state.collectAsState()
 
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .background(AuthGradient.background)
             .padding(top=36.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,39 +105,39 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     ) {
                             AuthText("Full Name")
                             AuthTextField(
-                                value= name,
-                                onChange = {name = it},
+                                value= state.name,
+                                onChange = {viewModel.onEvent(SignupEvent.NameChanged(it))},
                                 label = "Enter your full name",
                                 leadingIcon = Icons.Default.Person
                             )
 
                             AuthText("Email Address")
                             AuthTextField(
-                                value= email,
-                                onChange = {email = it},
+                                value= state.email,
+                                onChange = {viewModel.onEvent(SignupEvent.EmailChanged(it))},
                                 label = "your.email@example.com",
                                 leadingIcon = Icons.Default.Email
                             )
 
                            AuthText("Phone Number" )
                             AuthTextField(
-                                value= phoneNo,
-                                onChange = {phoneNo = it},
+                                value= state.phone,
+                                onChange = {viewModel.onEvent(SignupEvent.PhoneChanged(it))},
                                 label = "+91 1234567890",
                                 leadingIcon = Icons.Default.Phone
                             )
 
                             AuthText("Password")
                             PasswordTextField(
-                                text = password,
-                                onChange = { password = it },
+                                text = state.password,
+                                onChange = { viewModel.onEvent(SignupEvent.PasswordChanged(it)) },
                                 label = "Create a password",
                             )
 
                            AuthText("Confirm Password")
                             PasswordTextField(
-                                text = confirm_password,
-                                onChange = { confirm_password = it },
+                                text = state.confirmPassword,
+                                onChange = { viewModel.onEvent(SignupEvent.ConfirmPasswordChanged(it)) },
                                 label = "Re-enter your password",
                             )
 
@@ -156,7 +158,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                                             ),
                                             modifier = Modifier.size(20.dp),
                                         )
-                                        Spacer(modifier.size(8.dp))
+                                        Spacer(Modifier.size(8.dp))
 
                                         Text(
                                             text = "I agree to the ",

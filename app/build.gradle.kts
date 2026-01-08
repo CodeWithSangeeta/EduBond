@@ -6,6 +6,10 @@ plugins {
     //Apply the ksp plugin using the alias
     alias(libs.plugins.ksp)
 
+    //hilt plugins
+    alias(libs.plugins.hilt)
+
+
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 
@@ -77,6 +81,13 @@ dependencies {
     // Navigation
     val nav_version = "2.9.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    //hilt navigation dependency
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    //hilt dependency
+    implementation("com.google.dagger:hilt-android:2.56.2")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
     //    //Room database dependency
     implementation(libs.androidx.room.runtime)
