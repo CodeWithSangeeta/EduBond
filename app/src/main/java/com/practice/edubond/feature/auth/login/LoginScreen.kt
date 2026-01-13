@@ -58,6 +58,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.practice.edubond.R
 import com.practice.edubond.app_navigation.MainRoutes
+import com.practice.edubond.feature.auth.AuthViewModel
 import com.practice.edubond.feature.auth.components.AuthCard
 import com.practice.edubond.feature.auth.components.AuthFormWrapper
 import com.practice.edubond.feature.auth.components.AuthText
@@ -71,15 +72,24 @@ import com.practice.edubond.feature.auth.components.AuthGradient
 import com.practice.edubond.feature.auth.components.AuthSwitchText
 import com.practice.edubond.feature.auth.components.SocialDivider
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
+import com.practice.edubond.feature.auth.signup.SignupEvent
 
 
 @Composable
 fun LoginScreen(
     navController : NavController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    var selectedRole by remember { mutableStateOf<String?>(null) }
+    val parentEntry = remember(navController) {
+        navController.getBackStackEntry(MainRoutes.AUTH)
+    }
+    val authViewModel : AuthViewModel = hiltViewModel(parentEntry)
+    val role by authViewModel.selectedRole.collectAsState()
     val state by viewModel.state.collectAsState()
+
+//    LaunchedEffect(role) {
+//        viewModel.onEvent(LoginEvent.RoleUpdated(role))
+//    }
 
 
     Column(
@@ -118,8 +128,10 @@ fun LoginScreen(
 
         AuthCard {
                     AuthFormWrapper(
-                        selectedRole = selectedRole,
-                        onRoleSelected = { selectedRole = it }
+                        selectedRole = role,
+                        onRoleSelected = {
+                            authViewModel.selectRole(it)
+                        }
                     ) {
                                 AuthText("Email")
                                 AuthTextField(
@@ -155,13 +167,17 @@ fun LoginScreen(
 
                                 GradientButton(
                                     text = "Login",
-                                    selectedRole = selectedRole,
+                                    selectedRole = role,
+                                    //enabled = selectedRole != null,
                                     onClick = { viewModel.onEvent(LoginEvent.LoginClicked)}
                                 )
                                 SocialDivider("Or Continue with")
                                 GoogleButton{}
-                                AuthSwitchText("Don't have an account?","Sign Up", onClick = {})
+                                AuthSwitchText("Don't have an account?","Sign Up", onClick = {navController.navigate(AuthRoutes.SIGNUP){
+                                    launchSingleTop = true
+                                } })
 
+                                Spacer(modifier = Modifier.height(20.dp))
                                 }
                             }
                         }

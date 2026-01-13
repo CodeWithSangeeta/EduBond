@@ -57,6 +57,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.practice.edubond.R
+import com.practice.edubond.app_navigation.MainRoutes
+import com.practice.edubond.feature.auth.AuthViewModel
 import com.practice.edubond.feature.auth.components.AuthCard
 import com.practice.edubond.feature.auth.components.AuthFormWrapper
 import com.practice.edubond.feature.auth.components.AuthText
@@ -69,16 +71,25 @@ import com.practice.edubond.feature.auth.components.RoleSwitch
 import com.practice.edubond.feature.auth.components.AuthGradient
 import com.practice.edubond.feature.auth.components.AuthSwitchText
 import com.practice.edubond.feature.auth.components.SocialDivider
+import com.practice.edubond.feature.auth.login.LoginEvent
 import com.practice.edubond.feature.auth.login.LoginViewModel
+import com.practice.edubond.feature.auth.navigation.AuthRoutes
 
 
 @Composable
 fun SignupScreen(navController: NavController,
                  viewModel: SignupViewModel = hiltViewModel()) {
-    var selectedRole by remember { mutableStateOf<String?>(null) }
+
+    val parentEntry = remember(navController) {
+        navController.getBackStackEntry(MainRoutes.AUTH)
+    }
+
+    val authViewModel : AuthViewModel = hiltViewModel(parentEntry)
+    val role by authViewModel.selectedRole.collectAsState()
+    val state by viewModel.state.collectAsState()
+
     var checked by remember {mutableStateOf(false)}
 
-    val state by viewModel.state.collectAsState()
 
 
     Column(
@@ -100,8 +111,8 @@ fun SignupScreen(navController: NavController,
         )
        AuthCard{
                     AuthFormWrapper(
-                        selectedRole = selectedRole,
-                        onRoleSelected = { selectedRole = it }
+                        selectedRole = role,
+                        onRoleSelected = {authViewModel.selectRole(it) }
                     ) {
                             AuthText("Full Name")
                             AuthTextField(
@@ -198,14 +209,18 @@ fun SignupScreen(navController: NavController,
 
                             GradientButton(
                                 text = "Sign Up",
-                                selectedRole = selectedRole,
+                                selectedRole = role,
                                 onClick = {}
                             )
 
                         SocialDivider("Or sign up with")
                         GoogleButton{}
-                        AuthSwitchText("Already have an account? ","Login", onClick = {})
+                        AuthSwitchText("Already have an account? ","Login", onClick = {navController.navigate(
+                            AuthRoutes.LOGIN){
+                                launchSingleTop = true
+                            }})
 
+                        Spacer(modifier = Modifier.height(40.dp))
                         }
                     }
                 }
