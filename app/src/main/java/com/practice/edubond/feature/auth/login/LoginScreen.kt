@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -87,9 +88,9 @@ fun LoginScreen(
     val role by authViewModel.selectedRole.collectAsState()
     val state by viewModel.state.collectAsState()
 
-//    LaunchedEffect(role) {
-//        viewModel.onEvent(LoginEvent.RoleUpdated(role))
-//    }
+    LaunchedEffect(role) {
+        viewModel.onEvent(LoginEvent.RoleUpdated(role))
+    }
 
 
     Column(
@@ -109,22 +110,8 @@ fun LoginScreen(
             }
         }
 
-// Show loading
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
 
-// Show error
-        state.error?.let {
-            Text(
-                text = it,
-                color = Color.Red,
-                modifier = Modifier.padding(12.dp)
-            )
-        }
-
-
-        LogoHeader(title = "Welcome Back", subtitle = "Choose your role to continue")
+                LogoHeader(title = "Welcome Back", subtitle = "Choose your role to continue")
 
         AuthCard {
                     AuthFormWrapper(
@@ -162,15 +149,42 @@ fun LoginScreen(
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.height(20.dp))
 
+                        state.error?.let {
+                            Text(
+                                text = it,
+                                color = Color.Red,
+                                fontSize = 13.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 6.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
 
+                        when {
+                            state.isLoading -> {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 12.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(strokeWidth = 2.dp)
+                                }
+                            }
+
+                            else -> {
                                 GradientButton(
                                     text = "Login",
                                     selectedRole = role,
-                                    //enabled = selectedRole != null,
-                                    onClick = { viewModel.onEvent(LoginEvent.LoginClicked)}
+                                    onClick = {
+                                        viewModel.onEvent(LoginEvent.LoginClicked)
+                                    }
                                 )
+                            }
+                        }
+
                                 SocialDivider("Or Continue with")
                                 GoogleButton{}
                                 AuthSwitchText("Don't have an account?","Sign Up", onClick = {navController.navigate(AuthRoutes.SIGNUP){

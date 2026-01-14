@@ -26,15 +26,20 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+
     fun onEvent(event: LoginEvent) {
         when (event) {
 
             is LoginEvent.EmailChanged -> {
-                _state.update { it.copy(email = event.email) }
+                _state.update { it.copy(email = event.email,error  = null) }
             }
 
             is LoginEvent.PasswordChanged -> {
-                _state.update { it.copy(password = event.password) }
+                _state.update { it.copy(password = event.password,error = null) }
+            }
+
+            is LoginEvent.RoleUpdated -> {
+                _state.update { it.copy(selectedRole = event.role) }
             }
 
             LoginEvent.LoginClicked -> {
@@ -48,13 +53,32 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun login() {
-        val email = state.value.email
+        val email = state.value.email.trim()
         val password = state.value.password
 
-        if (email.isBlank() || password.isBlank()) {
-            _state.update { it.copy(error = "Email or password cannot be empty") }
+        //email empty
+        if (email.isEmpty()) {
+            _state.update { it.copy(error = "Email cannot be empty!") }
             return
         }
+
+        //email format
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _state.update { it.copy(error = "Enter a valid email") }
+            return
+        }
+        // Password empty
+        if (password.isEmpty()) {
+            _state.update { it.copy(error = "Password cannot be empty!") }
+            return
+        }
+        //Password length validation (NEW)
+        if (password.length < 6) {
+            _state.update { it.copy(error = "Password must be at least 6 characters") }
+            return
+        }
+
+        if (state.value.isLoading) return
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
@@ -71,7 +95,7 @@ class LoginViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = e.message ?: "Login failed"
+                        error = e.message ?: "Invalid Email or Password"
                     )
                 }
             }

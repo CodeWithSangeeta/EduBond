@@ -40,18 +40,12 @@ fun GradientButton(
                     RoundedCornerShape(14.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Row {
                 Text(
                     text = text,
                     color = Color.White,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "ArrowForward",
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+
         }
     }
     Spacer(modifier = Modifier.height(20.dp))

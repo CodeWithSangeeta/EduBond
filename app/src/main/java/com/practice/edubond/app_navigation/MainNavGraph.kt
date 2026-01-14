@@ -6,8 +6,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
 import com.practice.edubond.feature.auth.navigation.authNavGraph
-import com.practice.edubond.feature.auth.signup.SignupScreen
-import com.practice.edubond.feature.teacher.TeacherHomeScreen
+import com.practice.edubond.feature.student.navigation.StudentRoutes
+import com.practice.edubond.feature.student.navigation.studentNavGraph
+import com.practice.edubond.feature.teacher.navigation.TeacherRoutes
+import com.practice.edubond.feature.teacher.navigation.teacherNavGraph
 
 @Composable
 fun MainNavGraph() {
@@ -24,29 +26,21 @@ fun MainNavGraph() {
         }
 
 
+        //  Student graph
+        navigation(
+            startDestination = StudentRoutes.HOME,
+            route = MainRoutes.STUDENT_HOME
+        ) {
+           studentNavGraph(navController)
+        }
 
-//        // 🎓 Student graph (future)
-//        navigation(
-//            startDestination = MainRoutes.STUDENT_HOME,
-//            route = MainRoutes.STUDENT_HOME
-//        ) {
-//            composable(MainRoutes.STUDENT_HOME) {
-//                StudentHomeScreen(navController)
-//            }
-//        }
-//
-//        // 👩‍🏫 Teacher graph (future)
-//        navigation(
-//            startDestination = MainRoutes.TEACHER_HOME,
-//            route = MainRoutes.TEACHER_HOME
-//        ) {
-//            composable(MainRoutes.TEACHER_HOME) {
-//                TeacherHomeScreen(navController)
-//            }
-//        }
-
-
-
+        // Teacher graph
+        navigation(
+            startDestination = TeacherRoutes.HOME,
+            route = MainRoutes.TEACHER_HOME
+        ) {
+            teacherNavGraph(navController)
+        }
 
 
     })

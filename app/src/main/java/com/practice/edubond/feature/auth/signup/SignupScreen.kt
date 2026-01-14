@@ -29,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +40,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,6 +93,9 @@ fun SignupScreen(navController: NavController,
 
     var checked by remember {mutableStateOf(false)}
 
+    LaunchedEffect(role) {
+        viewModel.onEvent(SignupEvent.RoleUpdated(role))
+    }
 
 
     Column(
@@ -160,8 +166,8 @@ fun SignupScreen(navController: NavController,
 
                                     ) {
                                         Checkbox(
-                                            checked = checked,
-                                            onCheckedChange = { checked = it },
+                                            checked = state.isTermsChecked,
+                                            onCheckedChange = {viewModel.onEvent(SignupEvent.TermsChecked(it))},
                                             colors = CheckboxDefaults.colors(
                                                 checkedColor = Color(0xFF2760FF),
                                                 uncheckedColor = Color.Gray,
@@ -205,13 +211,40 @@ fun SignupScreen(navController: NavController,
 
                             }
 
-                            Spacer(modifier = Modifier.height(20.dp))
-
-                            GradientButton(
-                                text = "Sign Up",
-                                selectedRole = role,
-                                onClick = {}
+                        state.error?.let {
+                            Text(
+                                text = it,
+                                color = Color.Red,
+                                fontSize = 13.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 6.dp),
+                                textAlign = TextAlign.Center
                             )
+                        }
+
+                        when {
+                            state.isLoading -> {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 12.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(strokeWidth = 2.dp)
+                                }
+                            }
+
+                            else -> {
+                                GradientButton(
+                                    text = "Sign Up",
+                                    selectedRole = role,
+                                    onClick = {viewModel.onEvent(SignupEvent.SignupClicked)}
+                                )
+                            }
+                        }
+
+
 
                         SocialDivider("Or sign up with")
                         GoogleButton{}

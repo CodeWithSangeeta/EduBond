@@ -1,8 +1,7 @@
-package com.practice.edubond.feature.teacher
+package com.practice.edubond.feature.teacher.screens
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
