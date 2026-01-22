@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             EduBondTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-              MainNavGraph()
+               MainNavGraph()
                 }
             }
         }
