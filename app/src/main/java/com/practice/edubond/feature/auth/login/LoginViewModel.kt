@@ -3,6 +3,7 @@ package com.practice.edubond.feature.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practice.edubond.feature.auth.AuthViewModel
 import com.practice.edubond.feature.auth.domain.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,28 +15,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
-
-    init {
-        if (authRepository.isUserLoggedIn()) {
-            _state.update { it.copy(isAuthenticated = true) }
-        }
-    }
+    private val _loginSuccess = MutableStateFlow<Pair<String, String>?>(null)
+    val loginSuccess = _loginSuccess.asStateFlow()
 
 
     fun onEvent(event: LoginEvent) {
         when (event) {
 
             is LoginEvent.EmailChanged -> {
-                _state.update { it.copy(email = event.email,error  = null) }
+                _state.update { it.copy(email = event.email, error = null) }
             }
 
             is LoginEvent.PasswordChanged -> {
-                _state.update { it.copy(password = event.password,error = null) }
+                _state.update { it.copy(password = event.password, error = null) }
             }
 
             is LoginEvent.RoleUpdated -> {
@@ -47,7 +44,7 @@ class LoginViewModel @Inject constructor(
             }
 
             LoginEvent.GoogleLoginClicked -> {
-                // will add later
+                // next step
             }
         }
     }
@@ -55,47 +52,47 @@ class LoginViewModel @Inject constructor(
     private fun login() {
         val email = state.value.email.trim()
         val password = state.value.password
+        val role = state.value.selectedRole
 
-        //email empty
+        // validations (same as before)
         if (email.isEmpty()) {
-            _state.update { it.copy(error = "Email cannot be empty!") }
+            _state.update { it.copy(error = "Email cannot be empty") }
             return
         }
 
-        //email format
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _state.update { it.copy(error = "Enter a valid email") }
             return
         }
-        // Password empty
-        if (password.isEmpty()) {
-            _state.update { it.copy(error = "Password cannot be empty!") }
-            return
-        }
-        //Password length validation (NEW)
+
         if (password.length < 6) {
             _state.update { it.copy(error = "Password must be at least 6 characters") }
             return
         }
 
-        if (state.value.isLoading) return
+        if (role == null) {
+            _state.update { it.copy(error = "Please select role") }
+            return
+        }
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
             try {
-                authRepository.login(email, password)
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        isAuthenticated = true
-                    )
-                }
+                val userId = authRepository.login(email, password)
+
+                // 🔥 THIS IS THE CONNECTION POINT
+                _loginSuccess.value = Pair(userId, role)
+
+
+
+                _state.update { it.copy(isLoading = false) }
+
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = e.message ?: "Invalid Email or Password"
+                        error = e.message ?: "Login failed"
                     )
                 }
             }

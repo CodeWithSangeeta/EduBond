@@ -20,6 +20,9 @@ class SignupViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(SignupState())
     val state = _state.asStateFlow()
+    private val _signupSuccess = MutableStateFlow<Pair<String, String>?>(null)
+    val signupSuccess = _signupSuccess.asStateFlow()
+
 
     fun onEvent(event: SignupEvent) {
         when (event) {
@@ -107,9 +110,10 @@ class SignupViewModel @Inject constructor(
             try {
                 authRepository.signup(s.email, s.password)
 
-                _state.update {
-                    it.copy(isLoading = false, isSuccess = true)
-                }
+                _signupSuccess.value = Pair(s.name, s.role)
+
+                _state.update { it.copy(isLoading = false) }
+
 
             } catch (e: Exception) {
                 _state.update {

@@ -10,14 +10,22 @@ class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) : AuthRepository {
 
-    override suspend fun login(email: String, password: String) {
-        firebaseAuth
+    override suspend fun login(email: String, password: String):String {
+        val result = firebaseAuth
             .signInWithEmailAndPassword(email, password)
             .await()
+
+        return result.user?.uid
+            ?: throw IllegalStateException("User ID not found")
     }
 
-    override suspend fun signup(email: String, password: String) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+    override suspend fun signup(email: String, password: String): String {
+        val result = firebaseAuth
+            .createUserWithEmailAndPassword(email, password)
+            .await()
+
+        return result.user?.uid
+            ?: throw IllegalStateException("User ID not found")
     }
 
     override fun isUserLoggedIn(): Boolean {

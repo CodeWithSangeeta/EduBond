@@ -10,5 +10,4 @@ data class SignupState(
     val isTermsChecked: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSuccess: Boolean = false
 )
