@@ -11,5 +11,5 @@ sealed class SignupEvent {
     data class RoleUpdated(val role: String?) : SignupEvent()
     data class TermsChecked(val checked: Boolean) : SignupEvent()
     object SignupClicked : SignupEvent()
-    object GoogleLoginClicked : SignupEvent()
+    object GoogleSignupClicked : SignupEvent()
 }

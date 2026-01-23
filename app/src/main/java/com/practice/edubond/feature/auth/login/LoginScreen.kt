@@ -1,7 +1,5 @@
 package com.practice.edubond.feature.auth.login
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,53 +11,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.practice.edubond.R
 import com.practice.edubond.app_navigation.MainRoutes
-import com.practice.edubond.feature.auth.AuthViewModel
+import com.practice.edubond.feature.auth.state.AuthViewModel
 import com.practice.edubond.feature.auth.components.AuthCard
 import com.practice.edubond.feature.auth.components.AuthFormWrapper
 import com.practice.edubond.feature.auth.components.AuthText
@@ -68,12 +39,12 @@ import com.practice.edubond.feature.auth.components.GoogleButton
 import com.practice.edubond.feature.auth.components.GradientButton
 import com.practice.edubond.feature.auth.components.LogoHeader
 import com.practice.edubond.feature.auth.components.PasswordTextField
-import com.practice.edubond.feature.auth.components.RoleSwitch
 import com.practice.edubond.feature.auth.components.AuthGradient
 import com.practice.edubond.feature.auth.components.AuthSwitchText
 import com.practice.edubond.feature.auth.components.SocialDivider
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
-import com.practice.edubond.feature.auth.signup.SignupEvent
+import com.practice.edubond.feature.auth.state.AuthFormViewModel
+
 
 
 @Composable
@@ -85,11 +56,21 @@ fun LoginScreen(
         navController.getBackStackEntry(MainRoutes.AUTH)
     }
     val authViewModel : AuthViewModel = hiltViewModel(parentEntry)
-    val role by authViewModel.selectedRole.collectAsState()
+    val authFormViewModel: AuthFormViewModel = hiltViewModel(parentEntry)
+    val sharedRole by authFormViewModel.selectedRole.collectAsState()
     val state by viewModel.state.collectAsState()
+    val loginSuccess by viewModel.loginSuccess.collectAsState()
 
-    LaunchedEffect(role) {
-        viewModel.onEvent(LoginEvent.RoleUpdated(role))
+
+    LaunchedEffect(loginSuccess) {
+        loginSuccess?.let { (userId, role) ->
+            authViewModel.onLoginSuccess(userId, role)
+            authFormViewModel.clear() // optional, clean up
+        }
+    }
+
+    LaunchedEffect(sharedRole) {
+        viewModel.onEvent(LoginEvent.RoleUpdated(sharedRole))
     }
 
 
@@ -101,23 +82,14 @@ fun LoginScreen(
     ) {
 
 
-        // Navigate when authenticated
-        LaunchedEffect(state.isAuthenticated) {
-            if (state.isAuthenticated) {
-                navController.navigate(MainRoutes.STUDENT_HOME) {
-                    popUpTo(MainRoutes.AUTH) { inclusive = true }
-                }
-            }
-        }
-
-
-                LogoHeader(title = "Welcome Back", subtitle = "Choose your role to continue")
+        LogoHeader(title = "Welcome Back", subtitle = "Choose your role to continue")
 
         AuthCard {
                     AuthFormWrapper(
-                        selectedRole = role,
-                        onRoleSelected = {
-                            authViewModel.selectRole(it)
+                        selectedRole = sharedRole,
+                        onRoleSelected = { role ->
+                            authFormViewModel.updateRole(role)
+                            viewModel.onEvent(LoginEvent.RoleUpdated(role))
                         }
                     ) {
                                 AuthText("Email")
@@ -177,7 +149,7 @@ fun LoginScreen(
                             else -> {
                                 GradientButton(
                                     text = "Login",
-                                    selectedRole = role,
+                                    selectedRole = sharedRole,
                                     onClick = {
                                         viewModel.onEvent(LoginEvent.LoginClicked)
                                     }

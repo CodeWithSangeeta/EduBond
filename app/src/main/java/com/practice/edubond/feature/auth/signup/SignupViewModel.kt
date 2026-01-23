@@ -26,7 +26,6 @@ class SignupViewModel @Inject constructor(
 
     fun onEvent(event: SignupEvent) {
         when (event) {
-
             is SignupEvent.NameChanged ->
                 _state.update { it.copy(name = event.value,error = null) }
 
@@ -43,14 +42,18 @@ class SignupViewModel @Inject constructor(
                 _state.update { it.copy(confirmPassword = event.value,error = null) }
 
             is SignupEvent.RoleUpdated ->
-                _state.update { it.copy(role = event.role) }
+                _state.update { it.copy(selectedRole =  event.role) }
 
             is SignupEvent.TermsChecked -> {
                 _state.update { it.copy(isTermsChecked = event.checked) }
             }
 
-            SignupEvent.SignupClicked ->
+            SignupEvent.SignupClicked -> {
                 signup()
+            }
+            SignupEvent.GoogleSignupClicked -> {
+                // next step
+            }
         }
     }
 
@@ -93,7 +96,7 @@ class SignupViewModel @Inject constructor(
         }
 
         // Role
-        if (s.role == null) {
+        if (s.selectedRole == null) {
             _state.update { it.copy(error = "Please select a role") }
             return
         }
@@ -108,13 +111,9 @@ class SignupViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true, error = null) }
 
             try {
-                authRepository.signup(s.email, s.password)
-
-                _signupSuccess.value = Pair(s.name, s.role)
-
+                val userId = authRepository.signup(s.email, s.password)
+                _signupSuccess.value = Pair(userId, s.selectedRole!!)
                 _state.update { it.copy(isLoading = false) }
-
-
             } catch (e: Exception) {
                 _state.update {
                     it.copy(

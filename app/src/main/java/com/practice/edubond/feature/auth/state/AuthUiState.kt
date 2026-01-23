@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.auth
+package com.practice.edubond.feature.auth.state
 
 sealed interface AuthUiState {
 
@@ -15,4 +15,3 @@ sealed interface AuthUiState {
         val message: String
     ) : AuthUiState
 }
-

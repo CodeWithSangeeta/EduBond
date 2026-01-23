@@ -29,7 +29,7 @@ fun AuthCard(content : @Composable () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
-            Modifier.padding(vertical = 18.dp, horizontal = 16.dp),
+            Modifier.padding(vertical = 18.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()

@@ -3,7 +3,6 @@ package com.practice.edubond.feature.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practice.edubond.feature.auth.AuthViewModel
 import com.practice.edubond.feature.auth.domain.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

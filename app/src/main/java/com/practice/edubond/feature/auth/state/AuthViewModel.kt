@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.auth
+package com.practice.edubond.feature.auth.state
 
 import androidx.lifecycle.ViewModel
 import com.practice.edubond.feature.auth.domain.AuthRepository
