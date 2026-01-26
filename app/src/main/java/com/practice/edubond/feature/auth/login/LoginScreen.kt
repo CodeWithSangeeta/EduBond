@@ -1,5 +1,6 @@
 package com.practice.edubond.feature.auth.login
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,36 +45,22 @@ import com.practice.edubond.feature.auth.components.AuthGradient
 import com.practice.edubond.feature.auth.components.AuthSwitchText
 import com.practice.edubond.feature.auth.components.SocialDivider
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
-import com.practice.edubond.feature.auth.state.AuthFormViewModel
-
 
 
 @Composable
 fun LoginScreen(
     navController : NavController,
     viewModel: LoginViewModel = hiltViewModel(),
+    onLoginSuccess: (String, String) -> Unit
 ) {
-    val parentEntry = remember(navController) {
-        navController.getBackStackEntry(MainRoutes.AUTH)
-    }
-    val authViewModel : AuthViewModel = hiltViewModel(parentEntry)
-    val authFormViewModel: AuthFormViewModel = hiltViewModel(parentEntry)
-    val sharedRole by authFormViewModel.selectedRole.collectAsState()
     val state by viewModel.state.collectAsState()
     val loginSuccess by viewModel.loginSuccess.collectAsState()
 
-
     LaunchedEffect(loginSuccess) {
         loginSuccess?.let { (userId, role) ->
-            authViewModel.onLoginSuccess(userId, role)
-            authFormViewModel.clear() // optional, clean up
+            onLoginSuccess(userId, role)
         }
     }
-
-    LaunchedEffect(sharedRole) {
-        viewModel.onEvent(LoginEvent.RoleUpdated(sharedRole))
-    }
-
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -86,9 +74,8 @@ fun LoginScreen(
 
         AuthCard {
                     AuthFormWrapper(
-                        selectedRole = sharedRole,
+                        selectedRole = state.selectedRole,
                         onRoleSelected = { role ->
-                            authFormViewModel.updateRole(role)
                             viewModel.onEvent(LoginEvent.RoleUpdated(role))
                         }
                     ) {
@@ -149,7 +136,7 @@ fun LoginScreen(
                             else -> {
                                 GradientButton(
                                     text = "Login",
-                                    selectedRole = sharedRole,
+                                    selectedRole = state.selectedRole,
                                     onClick = {
                                         viewModel.onEvent(LoginEvent.LoginClicked)
                                     }

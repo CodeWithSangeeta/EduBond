@@ -1,7 +1,7 @@
 package com.practice.edubond.feature.student.navigation
 
 object StudentRoutes {
-        const val HOME = "home"
-        const val PROFILE = "profile"
-        const val SETTINGS = "settings"
+        const val STUDENT_DASHBOARD = "dashboard"
+        const val STUDENT_PROFILE = "profile"
+        const val STUDENT_SETTINGS = "settings"
     }

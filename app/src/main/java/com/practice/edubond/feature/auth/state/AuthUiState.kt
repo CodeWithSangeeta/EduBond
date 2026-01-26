@@ -8,10 +8,17 @@ sealed interface AuthUiState {
 
     data class Authenticated(
         val userId: String,
-        val role: String
+        val role: UserRole
     ) : AuthUiState
 
     data class Error(
         val message: String
     ) : AuthUiState
+}
+
+
+
+
+enum class UserRole {
+    STUDENT, TEACHER
 }

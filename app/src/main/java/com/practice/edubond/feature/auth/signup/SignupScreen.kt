@@ -51,32 +51,33 @@ import com.practice.edubond.feature.auth.components.AuthGradient
 import com.practice.edubond.feature.auth.components.AuthSwitchText
 import com.practice.edubond.feature.auth.components.SocialDivider
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
-import com.practice.edubond.feature.auth.state.AuthFormViewModel
 
 
 @Composable
 fun SignupScreen(navController: NavController,
-                 viewModel: SignupViewModel = hiltViewModel()) {
+                 viewModel: SignupViewModel = hiltViewModel(),
+                 onSignupSuccess: (String, String) -> Unit
+) {
 
     val parentEntry = remember(navController) {
         navController.getBackStackEntry(MainRoutes.AUTH)
     }
-
-    val authViewModel : AuthViewModel = hiltViewModel(parentEntry)
-    val authFormViewModel: AuthFormViewModel = hiltViewModel(parentEntry)
-    val sharedRole by authFormViewModel.selectedRole.collectAsState()
+//
+//   // val authViewModel : AuthViewModel = hiltViewModel(parentEntry)
+//    val authFormViewModel: AuthFormViewModel = hiltViewModel(parentEntry)
+//    val sharedRole by authFormViewModel.selectedRole.collectAsState()
     val state by viewModel.state.collectAsState()
     val signupSuccess by viewModel.signupSuccess.collectAsState()
 
     LaunchedEffect(signupSuccess) {
         signupSuccess?.let { (userId, role) ->
-            authViewModel.onSignupSuccess(userId, role)
+         onSignupSuccess(userId, role)
         }
     }
 
-    LaunchedEffect(sharedRole) {
-        viewModel.onEvent(SignupEvent.RoleUpdated(sharedRole))
-    }
+//    LaunchedEffect(sharedRole) {
+//        viewModel.onEvent(SignupEvent.RoleUpdated(sharedRole))
+//    }
 
 
     Column(
@@ -98,9 +99,9 @@ fun SignupScreen(navController: NavController,
         )
        AuthCard{
                     AuthFormWrapper(
-                        selectedRole = sharedRole,
+                        selectedRole = state.selectedRole,
                         onRoleSelected = { role->
-                            authFormViewModel.updateRole(role)
+                         //   authFormViewModel.updateRole(role)
                             viewModel.onEvent(SignupEvent.RoleUpdated(role))
                         }
                     ) {
@@ -222,7 +223,7 @@ fun SignupScreen(navController: NavController,
                             else -> {
                                 GradientButton(
                                     text = "Sign Up",
-                                    selectedRole = sharedRole,
+                                    selectedRole = state.selectedRole,
                                     onClick = {viewModel.onEvent(SignupEvent.SignupClicked)}
                                 )
                             }

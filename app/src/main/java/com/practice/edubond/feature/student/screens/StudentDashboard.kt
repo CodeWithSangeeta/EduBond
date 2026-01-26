@@ -6,6 +6,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
-fun StudentHomeScreen(navController: NavHostController) {
+fun StudentDashboard(navController: NavHostController) {
     Text("I am a student",fontSize = 80.sp)
 }

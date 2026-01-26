@@ -1,5 +1,6 @@
 package com.practice.edubond.feature.auth.state
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.practice.edubond.feature.auth.domain.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,11 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+   // private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _authState =
-        MutableStateFlow<AuthUiState>(AuthUiState.Unauthenticated)
+        MutableStateFlow<AuthUiState>(AuthUiState.Loading)
     val authState: StateFlow<AuthUiState> = _authState.asStateFlow()
 
     fun onLoginSuccess(
@@ -23,7 +24,7 @@ class AuthViewModel @Inject constructor(
     ) {
         _authState.value = AuthUiState.Authenticated(
             userId = userId,
-            role = role
+            role = UserRole.valueOf(role)
         )
     }
 
@@ -33,11 +34,15 @@ class AuthViewModel @Inject constructor(
     ) {
         _authState.value = AuthUiState.Authenticated(
             userId = userId,
-            role = role
+            role = UserRole.valueOf(role)
         )
     }
 
     fun onLogout() {
         _authState.value = AuthUiState.Unauthenticated
+    }
+
+    fun onError(message: String) {
+        _authState.value = AuthUiState.Error(message)
     }
 }
