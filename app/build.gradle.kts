@@ -106,4 +106,6 @@ dependencies {
 
     //Firebase Authentication (Google Sign In)
     implementation(libs.play.services.auth)
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }

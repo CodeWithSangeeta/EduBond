@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.screen
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +35,7 @@ import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.en
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModel
 import com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel.SgpaCgpaViewModelFactory
+import kotlin.text.get
 
 @Composable
 fun SgpaCgpaScreen() {

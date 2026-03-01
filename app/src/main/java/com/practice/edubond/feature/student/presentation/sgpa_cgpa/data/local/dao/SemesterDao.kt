@@ -1,11 +1,11 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.dao
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.dao
 
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SemesterEntity
+import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.entities.SemesterEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

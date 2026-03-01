@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.components
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.components
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color

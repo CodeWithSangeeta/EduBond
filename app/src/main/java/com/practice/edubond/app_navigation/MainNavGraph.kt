@@ -13,11 +13,11 @@ import com.practice.edubond.feature.auth.state.AuthViewModel
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
 import com.practice.edubond.feature.auth.navigation.authNavGraph
 import com.practice.edubond.feature.auth.state.UserRole
-import com.practice.edubond.feature.components.ThemeViewModel
 import com.practice.edubond.feature.student.navigation.StudentRoutes
 import com.practice.edubond.feature.student.navigation.studentNavGraph
 import com.practice.edubond.feature.teacher.navigation.TeacherRoutes
 import com.practice.edubond.feature.teacher.navigation.teacherNavGraph
+import com.practice.edubond.ui.theme.ThemeViewModel
 
 @Composable
 fun MainNavGraph(

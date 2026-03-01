@@ -1,12 +1,14 @@
-package com.practice.edubond.feature.components
+package com.practice.edubond.feature.student.screens.components
 
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.practice.edubond.feature.student.navigation.StudentRoutes
 
 @Composable
 

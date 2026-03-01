@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.viewModel
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.viewModel
 
 
 import android.content.Context

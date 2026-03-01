@@ -8,7 +8,8 @@ import com.practice.edubond.feature.student.screens.StudentDashboard
 
 fun NavGraphBuilder.studentNavGraph(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    themeViewModel= ThemeViewModel
 )
 {
     composable(route = StudentRoutes.STUDENT_DASHBOARD) {

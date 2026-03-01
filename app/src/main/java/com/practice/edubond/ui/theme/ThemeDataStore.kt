@@ -1,4 +1,4 @@
-package com.practice.edubond.data.local
+package com.practice.edubond.ui.theme
 
 
 import android.content.Context
@@ -14,23 +14,24 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val THEME_PREFERENCES = "theme_preferences"
-private val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
 
 val Context.themeDataStore: DataStore<Preferences> by preferencesDataStore(
     name = THEME_PREFERENCES
 )
 
 @Singleton
-class ThemeRepository @Inject constructor(
+class ThemeDataStore @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    val isDarkMode: Flow<Boolean> = context.themeDataStore.data.map { preferences ->
-        preferences[IS_DARK_MODE] ?: false // Default light mode
+    private val IS_DARK_MODE_KEY = booleanPreferencesKey("is_dark_mode")
+
+    suspend fun saveTheme(isDarkMode: Boolean) {
+        context.themeDataStore.edit { preferences ->
+            preferences[IS_DARK_MODE_KEY] = isDarkMode
+        }
     }
 
-    suspend fun saveTheme(isDark: Boolean) {
-        context.themeDataStore.edit { preferences ->
-            preferences[IS_DARK_MODE] = isDark
-        }
+    fun getTheme(): Flow<Boolean> = context.themeDataStore.data.map { preferences ->
+        preferences[IS_DARK_MODE_KEY] ?: false
     }
 }

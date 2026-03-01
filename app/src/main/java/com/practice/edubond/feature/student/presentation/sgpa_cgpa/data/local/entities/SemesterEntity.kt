@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.entities
 
 
 import androidx.room.Entity

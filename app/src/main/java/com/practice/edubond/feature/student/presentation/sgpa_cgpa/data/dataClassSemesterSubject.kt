@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.data
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.data
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList

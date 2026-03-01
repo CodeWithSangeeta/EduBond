@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.components
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

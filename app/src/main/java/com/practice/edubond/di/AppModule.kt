@@ -2,7 +2,7 @@ package com.practice.edubond.di
 
 
 import android.content.Context
-import com.practice.edubond.data.local.ThemeRepository
+import com.practice.edubond.ui.theme.ThemeDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,10 +12,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ThemeModule {
+object AppModule {
     @Provides
     @Singleton
-    fun provideThemeRepository(
+    fun provideThemeDataStore(
         @ApplicationContext context: Context
-    ): ThemeRepository = ThemeRepository(context)
+    ): ThemeDataStore = ThemeDataStore(context)
 }

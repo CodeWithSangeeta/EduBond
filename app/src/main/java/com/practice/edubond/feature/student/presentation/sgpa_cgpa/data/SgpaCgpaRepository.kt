@@ -1,4 +1,4 @@
-package com.practice.edubond.feature.student.sgpa_cgpa.presentation.data
+package com.practice.edubond.feature.student.presentation.sgpa_cgpa.data
 
 
 import com.practice.edubond.data.local.EduBondDatabase
