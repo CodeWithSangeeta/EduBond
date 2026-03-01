@@ -9,10 +9,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.practice.edubond.app_navigation.MainNavGraph
-import com.practice.edubond.feature.auth.login.LoginScreen
 import com.practice.edubond.feature.auth.state.AuthViewModel
+import com.practice.edubond.feature.components.ThemeViewModel
+import com.practice.edubond.feature.student.screens.StudentDashboard
 
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.screen.SgpaCgpaScreen
 import com.practice.edubond.ui.theme.EduBondTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,11 +23,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val authViewModel: AuthViewModel = hiltViewModel()
+            val themeViewModel: ThemeViewModel = hiltViewModel()
             EduBondTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-               MainNavGraph(authViewModel=authViewModel)
+               MainNavGraph(authViewModel=authViewModel,themeViewModel)
                 }
             }
+
+            StudentDashboard()
         }
     }
 }

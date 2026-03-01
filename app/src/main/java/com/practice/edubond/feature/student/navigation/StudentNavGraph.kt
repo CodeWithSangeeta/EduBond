@@ -12,11 +12,10 @@ fun NavGraphBuilder.studentNavGraph(
 )
 {
     composable(route = StudentRoutes.STUDENT_DASHBOARD) {
-        StudentDashboard(navController)
+        StudentDashboard(navController, themeViewModel) { themeViewModel.toggleTheme() }
     }
-    composable(route = StudentRoutes.STUDENT_PROFILE) {
-
-    }
-
+    composable(route = StudentRoutes.STUDENT_BADGES) { StudentBadges(navController) }
+    composable(route = StudentRoutes.STUDENT_PROGRESS) { StudentProgress(navController) }
+    composable(route = StudentRoutes.STUDENT_SETTINGS) { StudentSettings(navController) }
 
 }
