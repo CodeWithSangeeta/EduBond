@@ -13,6 +13,7 @@ import com.practice.edubond.feature.auth.state.AuthViewModel
 import com.practice.edubond.feature.auth.navigation.AuthRoutes
 import com.practice.edubond.feature.auth.navigation.authNavGraph
 import com.practice.edubond.feature.auth.state.UserRole
+import com.practice.edubond.feature.components.ThemeViewModel
 import com.practice.edubond.feature.student.navigation.StudentRoutes
 import com.practice.edubond.feature.student.navigation.studentNavGraph
 import com.practice.edubond.feature.teacher.navigation.TeacherRoutes
@@ -20,7 +21,8 @@ import com.practice.edubond.feature.teacher.navigation.teacherNavGraph
 
 @Composable
 fun MainNavGraph(
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    themeViewModel: ThemeViewModel
 ) {
     val navController = rememberNavController()
     val authState by authViewModel.authState.collectAsState()
