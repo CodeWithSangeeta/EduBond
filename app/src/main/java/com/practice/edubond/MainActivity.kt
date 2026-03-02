@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.practice.edubond.app_navigation.MainNavGraph
 import com.practice.edubond.feature.auth.state.AuthViewModel
-import com.practice.edubond.feature.student.screens.StudentDashboard
-
 import com.practice.edubond.ui.theme.EduBondTheme
 import com.practice.edubond.ui.theme.ThemeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,8 +31,6 @@ class MainActivity : ComponentActivity() {
                )
                 }
             }
-
-           //StudentDashboard(navController, themeViewModel) { themeViewModel.toggleTheme() }
         }
     }
 }

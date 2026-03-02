@@ -49,10 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.Subject
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.UiSubject
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
+import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.UiSubject
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

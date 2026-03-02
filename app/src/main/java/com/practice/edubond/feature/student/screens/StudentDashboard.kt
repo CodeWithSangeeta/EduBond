@@ -22,17 +22,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.practice.edubond.feature.student.presentation.sgpa_cgpa.components.ColorGradient
 import com.practice.edubond.feature.student.screens.components.StudentBottomNav
 import com.practice.edubond.feature.student.screens.components.DashboardCard
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.components.ColorGradient
+import com.practice.edubond.ui.theme.ThemeViewModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentDashboard(
     navController: NavHostController,
-    themeViewModel: themeViewModel,
-    function: () -> toggleTheme
+    themeViewModel: ThemeViewModel,
 ) {
     var currentTime by remember { mutableStateOf("") }
     var studyStreak by remember { mutableStateOf(7) }

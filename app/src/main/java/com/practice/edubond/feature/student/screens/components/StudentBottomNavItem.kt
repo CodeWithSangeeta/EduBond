@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.practice.edubond.feature.student.navigation.StudentRoutes
 
 enum class StudentBottomNavItem(
     val route: String,

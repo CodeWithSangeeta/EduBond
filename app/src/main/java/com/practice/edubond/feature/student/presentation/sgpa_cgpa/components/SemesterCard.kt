@@ -30,7 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.UiSubject
+import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.UiSubject
+
 
 
 @Composable
@@ -98,15 +99,15 @@ fun SemesterCard(
         if (expanded) {
             Column(modifier = Modifier.padding(16.dp)) {
 
-                subjects.forEachIndexed {index, subject ->
-                    SubjectCard(
-                        subject = subject,
-                        onChange = { updated ->
-                            onUpdateSubject(updated,index)
-                        },
-                        onDelete = { onDeleteSubject(index) }
-                    )
-                }
+//                subjects.forEachIndexed {index, subject ->
+//                    SubjectCard(
+//                        subject = subject,
+//                        onChange = { updated ->
+//                            onUpdateSubject(updated,index)
+//                        },
+//                        onDelete = { onDeleteSubject(index) }
+//                    )
+//                }
 
 
                     Spacer(modifier = Modifier.height(12.dp))

@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.dao.SemesterDao
 import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.dao.SubjectDao
-
 import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.entities.SemesterEntity
 import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.entities.SubjectEntity
 
@@ -22,7 +21,6 @@ import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.en
 )
 abstract class EduBondDatabase : RoomDatabase() {
 
-    // SGPA–CGPA DAOs
     abstract fun semesterDao(): SemesterDao
     abstract fun subjectDao(): SubjectDao
 

@@ -44,7 +44,7 @@ fun MainNavGraph(
             startDestination = StudentRoutes.STUDENT_DASHBOARD,
             route = MainRoutes.STUDENT_DASHBOARD
         ) {
-           studentNavGraph(navController,authViewModel)
+           studentNavGraph(navController,authViewModel,themeViewModel)
         }
 
         // Teacher graph
@@ -83,7 +83,6 @@ fun MainNavGraph(
             AuthUiState.Loading -> {
                 Log.d("MAIN_NAV", "Loading state")
 
-                // 🔹 Do nothing or show splash
             }
 
             is AuthUiState.Error -> {

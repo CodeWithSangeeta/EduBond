@@ -2,8 +2,8 @@ package com.practice.edubond.feature.student.presentation.sgpa_cgpa.data
 
 
 import com.practice.edubond.data.local.EduBondDatabase
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SemesterEntity
-import com.practice.edubond.feature.student.sgpa_cgpa.presentation.data.local.entities.SubjectEntity
+import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.entities.SemesterEntity
+import com.practice.edubond.feature.student.presentation.sgpa_cgpa.data.local.entities.SubjectEntity
 import kotlinx.coroutines.flow.Flow
 
 class SgpaCgpaRepository(
